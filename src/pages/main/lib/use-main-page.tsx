@@ -18,6 +18,9 @@ export const useMainPage = () => {
     console.log(data);
   });
 
+  connection.invoke("ReceiveData");
+  // connection.stream("ReceiveData");
+
   connection.onclose((err) => console.error(err));
   connection.onreconnecting((err) => console.error(err));
 
