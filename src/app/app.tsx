@@ -1,4 +1,5 @@
-import { AppProviders } from "./providers/app-providers";
+import { MainPage } from "@/pages/main";
+
 import "./styles/index.css";
 
 export const App = () => {
@@ -8,5 +9,5 @@ export const App = () => {
     throw new Error("ENV переменная VITE_PUBLIC_API_URL не определена");
   }
 
-  return <AppProviders />;
+  return <MainPage />;
 };

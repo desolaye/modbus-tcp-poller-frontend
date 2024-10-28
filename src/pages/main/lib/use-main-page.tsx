@@ -1,35 +1,59 @@
-import * as signalR from "@microsoft/signalr";
+import { useState } from "react";
 
 import { useFetch } from "@/shared/lib/use-fetch";
+import { useMutate } from "@/shared/lib/use-mutate";
+import { useSignalR } from "@/shared/lib/use-signal-r";
+
 import { getAllModbusDevicesMock } from "@/entities/modbus-device/services/get-all-modbus-devices.mock";
 
-export const useMainPage = () => {
-  const ENV_URL = import.meta.env.VITE_PUBLIC_API_URL;
+import {
+  ModbusDevicePollMapType,
+  ModbusDevicePollType,
+  ModbusDeviceType,
+  postAddModbusDevice,
+} from "@/entities/modbus-device";
 
-  const { data, isError, isLoading } = useFetch({
+export const useMainPage = () => {
+  const [pollData, setPollData] = useState<ModbusDevicePollMapType>({});
+  const [device, setDevice] = useState<ModbusDeviceType>();
+
+  const onMessageRecieve = (poll: ModbusDevicePollType) => {
+    setPollData((prev) => ({ ...prev, [String(poll.deviceId)]: poll }));
+  };
+
+  const selectPollData = (device: ModbusDeviceType) => {
+    return pollData[device.id];
+  };
+
+  const { data, isError, isLoading, refetch } = useFetch({
     fn: getAllModbusDevicesMock,
   });
 
-  const connection = new signalR.HubConnectionBuilder()
-    .withUrl(`${ENV_URL}/modbusHub`)
-    .build();
-
-  connection.on("ReceiveData", (data) => {
-    console.log(data);
+  const {
+    mutateAsync,
+    isError: isErrorMutate,
+    isLoading: isLoadingMutate,
+  } = useMutate({
+    fn: (device: ModbusDeviceType) => postAddModbusDevice(device),
+    onSuccess: () => refetch(),
   });
 
-  // connection.invoke("ReceiveData");
-  // connection.stream("ReceiveData");
-
-  connection.onclose((err) => console.error(err));
-  connection.onreconnecting((err) => console.error(err));
-  connection.start();
+  const { isSignalError } = useSignalR({
+    method: "ReceiveData",
+    enabled: !isError && !isLoading,
+    onMessageRecieve,
+  });
 
   return {
     values: {
       data,
       isError,
+      isSignalError,
       isLoading,
+    },
+    handlers: {
+      selectPollData,
+      mutateAsync,
     },
   };
 };
