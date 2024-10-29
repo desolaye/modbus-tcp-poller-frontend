@@ -12,8 +12,7 @@ type ModbusDeviceProps = {
 export const ModbusDevice = (props: ModbusDeviceProps) => {
   const { deviceData, pollData } = props;
 
-  // const isError = Boolean(pollData?.isWarning);
-  const isError = deviceData.id === "1";
+  const isError = Boolean(pollData?.isWarning);
 
   const color = isError ? "#eee" : undefined;
   const classes = `grid_row body_row${isError ? " error_row" : ""}`;

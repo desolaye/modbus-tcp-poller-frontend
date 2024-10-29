@@ -4,29 +4,37 @@ import { useFetch } from "@/shared/lib/use-fetch";
 import { useMutate } from "@/shared/lib/use-mutate";
 import { useSignalR } from "@/shared/lib/use-signal-r";
 
-import { getAllModbusDevicesMock } from "@/entities/modbus-device/services/get-all-modbus-devices.mock";
-
 import {
   ModbusDevicePollMapType,
   ModbusDevicePollType,
   ModbusDeviceType,
   postAddModbusDevice,
+  getAllModbusDevices,
 } from "@/entities/modbus-device";
 
 export const useMainPage = () => {
   const [pollData, setPollData] = useState<ModbusDevicePollMapType>({});
-  const [device, setDevice] = useState<ModbusDeviceType>();
 
   const onMessageRecieve = (poll: ModbusDevicePollType) => {
     setPollData((prev) => ({ ...prev, [String(poll.deviceId)]: poll }));
   };
 
-  const selectPollData = (device: ModbusDeviceType) => {
-    return pollData[device.id];
+  const selectPollData = (device: ModbusDeviceType) => pollData[device.id];
+
+  const sortByWarning = (
+    polls: ModbusDevicePollMapType,
+    devices?: ModbusDeviceType[]
+  ) => {
+    const warnings =
+      devices?.filter((v) => Boolean(polls[v.id].isWarning)) || [];
+    const normals =
+      devices?.filter((v) => !Boolean(polls[v.id].isWarning)) || [];
+
+    return [...warnings, ...normals];
   };
 
   const { data, isError, isLoading, refetch } = useFetch({
-    fn: getAllModbusDevicesMock,
+    fn: getAllModbusDevices,
   });
 
   const {
@@ -46,9 +54,11 @@ export const useMainPage = () => {
 
   return {
     values: {
-      data,
+      data: sortByWarning(pollData, data),
       isError,
       isSignalError,
+      isErrorMutate,
+      isLoadingMutate,
       isLoading,
     },
     handlers: {

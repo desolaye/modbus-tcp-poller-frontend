@@ -6,6 +6,14 @@ export type ModbusDeviceType = {
   registerName: string;
 };
 
+export type ModbusDeviceFormType = {
+  id: string;
+  ipAddress: string;
+  port: string;
+  registerAddress: string;
+  registerName: string;
+};
+
 export type ModbusDevicePollType = {
   deviceId: number;
   ipAddress: string;

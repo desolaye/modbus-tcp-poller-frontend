@@ -37,18 +37,17 @@ export const MainPage = () => {
       <main style={{ flex: "1" }}>
         {values.isSignalError && (
           <p style={{ ...tooltopStyles, color: "#f44336" }}>
-            Ошибка чтения новых сообщений с сервера. Перезагрузите страницу или
-            обратитесь к специалисту
+            Ошибка чтения новых сообщений с сервера
+            <br />
+            Перезагрузите страницу или обратитесь к специалисту
           </p>
         )}
 
-        {values.isError && (
-          <p style={{ ...tooltopStyles, color: "#f44336" }}>
-            Ошибка загрузки списка устройств
-          </p>
-        )}
-
-        <ModbusDeviceCreator />
+        <ModbusDeviceCreator
+          isMutateError={values.isErrorMutate}
+          isMutateLoading={values.isLoadingMutate}
+          onMutate={handlers.mutateAsync}
+        />
 
         <section style={{ overflow: "auto", padding: "8px 0" }}>
           <header className="grid_row header_row">
@@ -63,6 +62,20 @@ export const MainPage = () => {
           {values.isLoading && (
             <p style={{ ...tooltopStyles }}>Список устройств загружается...</p>
           )}
+
+          {values.isError && (
+            <p style={{ ...tooltopStyles, color: "#f44336" }}>
+              Ошибка загрузки списка устройств
+            </p>
+          )}
+
+          {!values.isError &&
+            !values.isLoading &&
+            !Boolean(values.data?.length) && (
+              <p style={{ ...tooltopStyles }}>
+                Список устройств пустой. Добавьте первое устройство
+              </p>
+            )}
 
           <main>
             {values.data?.map((device) => (
