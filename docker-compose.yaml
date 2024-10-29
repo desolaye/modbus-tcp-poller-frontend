@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: modbus-tcp-caller-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    pull_policy: always
+    env_file:
+      - .env
+    ports:
+      - 6001:6001
+
+volumes:
+  data:
