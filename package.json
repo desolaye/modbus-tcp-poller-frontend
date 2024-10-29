@@ -1,5 +1,5 @@
 {
-  "name": "modbus_tcp_caller_frontend",
+  "name": "modbus_tcp_poller_frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
