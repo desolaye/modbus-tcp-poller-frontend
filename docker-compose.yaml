@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   app:
-    container_name: modbus-tcp-caller-frontend
+    container_name: modbus-tcp-poller-frontend
     build:
       context: .
       dockerfile: Dockerfile
