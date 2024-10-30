@@ -26,9 +26,9 @@ export const useMainPage = () => {
     devices?: ModbusDeviceType[]
   ) => {
     const warnings =
-      devices?.filter((v) => Boolean(polls[v.id].isWarning)) || [];
+      devices?.filter((v) => Boolean(polls[v.id]?.isWarning)) || [];
     const normals =
-      devices?.filter((v) => !Boolean(polls[v.id].isWarning)) || [];
+      devices?.filter((v) => !Boolean(polls[v.id]?.isWarning)) || [];
 
     return [...warnings, ...normals];
   };
