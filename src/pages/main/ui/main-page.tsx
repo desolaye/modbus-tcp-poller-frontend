@@ -19,15 +19,7 @@ export const MainPage = () => {
   };
 
   return (
-    <article
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        minHeight: "100vh",
-        backgroundColor: "#eee",
-      }}
-    >
+    <article className="main_page">
       <header style={subStyles}>
         <h1 style={{ fontWeight: 600, color: "#eee" }}>
           Проверка состояния устройств

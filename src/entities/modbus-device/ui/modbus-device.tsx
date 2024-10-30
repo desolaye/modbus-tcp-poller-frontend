@@ -1,4 +1,6 @@
 import { ErrorIcon } from "@/shared/ui/error-icon";
+import { QuestionIcon } from "@/shared/ui/question-icon";
+
 import {
   ModbusDevicePollType,
   ModbusDeviceType,
@@ -13,9 +15,12 @@ export const ModbusDevice = (props: ModbusDeviceProps) => {
   const { deviceData, pollData } = props;
 
   const isError = Boolean(pollData?.isWarning);
+  const isPending = !Boolean(pollData);
 
   const color = isError ? "#eee" : undefined;
-  const classes = `grid_row body_row${isError ? " error_row" : ""}`;
+  const classes = `grid_row body_row${isError ? " error_row" : ""}${
+    isPending ? " pending_row" : ""
+  }`;
 
   return (
     <a
@@ -33,6 +38,12 @@ export const ModbusDevice = (props: ModbusDeviceProps) => {
       {isError && (
         <div style={{ width: 24, height: 24 }}>
           <ErrorIcon />
+        </div>
+      )}
+
+      {isPending && (
+        <div style={{ width: 24, height: 24 }}>
+          <QuestionIcon />
         </div>
       )}
     </a>

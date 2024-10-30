@@ -25,9 +25,7 @@ export const useFetch = <T>(props: UseFetchProps<T>) => {
     fetchFn();
   };
 
-  useEffect(() => {
-    fetchFn();
-  }, []);
+  useEffect(() => fetchFn(), []);
 
   return { data, isLoading, isError, refetch };
 };
