@@ -11,18 +11,23 @@ export const useFetch = <T>(props: UseFetchProps<T>) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
-  const [isRefetch, setIsRefetch] = useState(true);
 
-  const refetch = () => setIsRefetch(true);
+  const fetchFn = () => {
+    fn()
+      .then(setData)
+      .catch(() => setIsError(true))
+      .finally(() => setIsLoading(false));
+  };
+
+  const refetch = () => {
+    setData(undefined);
+    setIsLoading(true);
+    fetchFn();
+  };
 
   useEffect(() => {
-    if (isRefetch) {
-      fn()
-        .then(setData)
-        .catch(() => setIsError(true))
-        .finally(() => setIsLoading(false));
-    }
-  }, [isRefetch]);
+    fetchFn();
+  }, []);
 
   return { data, isLoading, isError, refetch };
 };
