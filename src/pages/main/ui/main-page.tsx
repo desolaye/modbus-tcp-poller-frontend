@@ -47,7 +47,7 @@ export const MainPage = () => {
             <p className="header_cell">IP адрес</p>
             <p className="header_cell">Порт</p>
             <p className="header_cell">Имя устройства</p>
-            <p className="header_cell">Порт устройства</p>
+            <p className="header_cell">Регистр</p>
             <div />
           </header>
 
