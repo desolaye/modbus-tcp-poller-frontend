@@ -55,6 +55,7 @@ export const ModbusDeviceCreator = (props: ModbusDeviceCreatorProps) => {
               value={values.device[v.name]}
               onChange={handlers.change}
               className="form_input"
+              autoComplete="off"
             />
           ))}
 
