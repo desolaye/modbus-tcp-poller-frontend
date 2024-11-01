@@ -1,7 +1,13 @@
 import { CSSProperties } from "react";
 
-import { ModbusDevice, ModbusDeviceCreator } from "@/entities/modbus-device";
+import {
+  ModbusDevice,
+  ModbusDeviceCreator,
+  ModbusDeviceDelete,
+} from "@/entities/modbus-device";
 import { useMainPage } from "../lib/use-main-page";
+import { ModalScreen } from "@/shared/ui/modal-screen";
+import { ModbusDeviceForm } from "@/entities/modbus-device/ui/modbus-device-form";
 
 export const MainPage = () => {
   const { values, handlers } = useMainPage();
@@ -12,43 +18,28 @@ export const MainPage = () => {
     fontWeight: 600,
   };
 
-  const subStyles: CSSProperties = {
-    padding: 8,
-    backgroundColor: "#164157",
-    textAlign: "center",
-  };
-
   return (
     <article className="main_page">
-      <header style={subStyles}>
-        <h1 style={{ fontWeight: 600, color: "#eee" }}>
-          Проверка состояния устройств
-        </h1>
-      </header>
-
       <main style={{ flex: "1" }}>
         {values.isSignalError && (
           <p style={{ ...tooltopStyles, color: "#f44336" }}>
             Ошибка чтения новых сообщений с сервера
             <br />
-            Перезагрузите страницу или обратитесь к специалисту
+            Подключаемся заново...
           </p>
         )}
 
-        <ModbusDeviceCreator
-          isMutateError={values.isErrorMutate}
-          isMutateLoading={values.isLoadingMutate}
-          onMutate={handlers.mutateAsync}
-        />
-
-        <section style={{ overflow: "auto", padding: "8px 0" }}>
+        <section style={{ overflow: "auto", display: "grid" }}>
           <header className="grid_row header_row">
+            <div />
             <p className="header_cell">ID устройства</p>
             <p className="header_cell">IP адрес</p>
             <p className="header_cell">Порт</p>
             <p className="header_cell">Имя устройства</p>
             <p className="header_cell">Регистр</p>
-            <div />
+            <ModbusDeviceCreator
+              onClick={() => handlers.setSelectedDeviceId(0)}
+            />
           </header>
 
           {values.isLoading && (
@@ -75,37 +66,32 @@ export const MainPage = () => {
                 key={device.id}
                 deviceData={device}
                 pollData={handlers.selectPollData(device)}
+                onAction={handlers.onAction}
               />
             ))}
           </main>
         </section>
       </main>
 
-      <footer style={{ ...subStyles }}>
-        <p
-          style={{
-            color: "#eee",
-            padding: "6px 0",
-          }}
-        >
-          Сделано компанией{" "}
-          <a
-            href="https://vorpostnsk.ru/"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              fontWeight: 600,
-              color: "#eee",
-              padding: "6px 10px",
+      <ModalScreen
+        open={typeof values.selectedDeviceId === "number"}
+        onClose={() => handlers.setSelectedDeviceId(undefined)}
+      >
+        <ModbusDeviceForm
+          onSuccess={handlers.onSuccessMutate}
+          deviceId={values.selectedDeviceId}
+        />
+      </ModalScreen>
 
-              backgroundColor: "#005389",
-              borderRadius: 8,
-            }}
-          >
-            ФОРПОСТ
-          </a>{" "}
-        </p>
-      </footer>
+      <ModalScreen
+        open={typeof values.deletingDeviceId === "number"}
+        onClose={() => handlers.setDeletingDeviceId(undefined)}
+      >
+        <ModbusDeviceDelete
+          onSuccess={handlers.onSuccessMutate}
+          deviceId={values.deletingDeviceId}
+        />
+      </ModalScreen>
     </article>
   );
 };

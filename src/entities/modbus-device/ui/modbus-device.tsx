@@ -1,5 +1,9 @@
+import { MouseEvent } from "react";
+
 import { ErrorIcon } from "@/shared/ui/error-icon";
 import { QuestionIcon } from "@/shared/ui/question-icon";
+import { DeleteIcon } from "@/shared/ui/delete-icon";
+import { EditIcon } from "@/shared/ui/edit-icon";
 
 import {
   ModbusDevicePollType,
@@ -9,10 +13,11 @@ import {
 type ModbusDeviceProps = {
   deviceData: ModbusDeviceType;
   pollData?: ModbusDevicePollType;
+  onAction: (id: number, isDelete?: boolean) => void;
 };
 
 export const ModbusDevice = (props: ModbusDeviceProps) => {
-  const { deviceData, pollData } = props;
+  const { deviceData, pollData, onAction } = props;
 
   const isError = Boolean(pollData?.isWarning);
   const isPending = !Boolean(pollData);
@@ -22,6 +27,13 @@ export const ModbusDevice = (props: ModbusDeviceProps) => {
     isPending ? " pending_row" : ""
   }`;
 
+  const handleClick = (
+    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+  ) => {
+    e.preventDefault();
+    onAction(deviceData.id, e.currentTarget.name === "delete");
+  };
+
   return (
     <a
       className={classes}
@@ -29,23 +41,36 @@ export const ModbusDevice = (props: ModbusDeviceProps) => {
       target="_blank"
       rel="noopener noreferrer"
     >
+      <div style={{ width: 30, height: 30 }}>
+        {isPending && <QuestionIcon />}
+        {isError && <ErrorIcon />}
+      </div>
+
       <p style={{ color }}>{deviceData.id}</p>
       <p style={{ color }}>{deviceData.ipAddress}</p>
       <p style={{ color }}>{deviceData.port}</p>
       <p style={{ color }}>{deviceData.registerName}</p>
       <p style={{ color }}>{deviceData.registerAddress}</p>
 
-      {isError && (
-        <div style={{ width: 24, height: 24 }}>
-          <ErrorIcon />
-        </div>
-      )}
+      <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+        <button
+          name="edit"
+          className="button_primary"
+          style={{ padding: "2px 4px" }}
+          onClick={handleClick}
+        >
+          <EditIcon />
+        </button>
 
-      {isPending && (
-        <div style={{ width: 24, height: 24 }}>
-          <QuestionIcon />
-        </div>
-      )}
+        <button
+          name="delete"
+          className="button_neutral"
+          style={{ padding: "2px 4px" }}
+          onClick={handleClick}
+        >
+          <DeleteIcon />
+        </button>
+      </div>
     </a>
   );
 };

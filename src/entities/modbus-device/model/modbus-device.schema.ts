@@ -1,5 +1,5 @@
 export type ModbusDeviceType = {
-  id: string;
+  id: number;
   ipAddress: string;
   port: number;
   registerAddress: number;

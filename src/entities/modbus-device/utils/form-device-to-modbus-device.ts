@@ -8,6 +8,7 @@ export const formDeviceToModbusDevice = (
 ): ModbusDeviceType => {
   return {
     ...device,
+    id: Number(device.id),
     port: Number(device.port || "502"),
     registerAddress: Number(device.registerAddress || "60"),
   };
