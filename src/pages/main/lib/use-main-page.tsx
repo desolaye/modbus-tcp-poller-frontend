@@ -14,7 +14,7 @@ import {
 export const useMainPage = () => {
   const [pollData, setPollData] = useState<ModbusDevicePollMapType>({});
   const [selectedDeviceId, setSelectedDeviceId] = useState<number>();
-  const [deletingDeviceId, setDeletingDeviceId] = useState<number>();
+  const [deletingDevice, setDeletingDevice] = useState<ModbusDeviceType>();
 
   const onMessageRecieve = (poll: ModbusDevicePollType) => {
     setPollData((prev) => ({ ...prev, [String(poll.deviceId)]: poll }));
@@ -29,7 +29,7 @@ export const useMainPage = () => {
   const onSuccessMutate = () => {
     refetch();
     setSelectedDeviceId(undefined);
-    setDeletingDeviceId(undefined);
+    setDeletingDevice(undefined);
   };
 
   const { isSignalError } = useSignalR({
@@ -38,8 +38,8 @@ export const useMainPage = () => {
     onMessageRecieve,
   });
 
-  const onAction = (id: number, isDelete?: boolean) => {
-    isDelete ? setDeletingDeviceId(id) : setSelectedDeviceId(id);
+  const onAction = (device: ModbusDeviceType, isDelete?: boolean) => {
+    isDelete ? setDeletingDevice(device) : setSelectedDeviceId(device.id);
   };
 
   return {
@@ -49,12 +49,12 @@ export const useMainPage = () => {
       isSignalError,
       isLoading,
       selectedDeviceId,
-      deletingDeviceId,
+      deletingDevice,
     },
     handlers: {
       onSuccessMutate,
       setSelectedDeviceId,
-      setDeletingDeviceId,
+      setDeletingDevice,
       selectPollData,
       onAction,
     },

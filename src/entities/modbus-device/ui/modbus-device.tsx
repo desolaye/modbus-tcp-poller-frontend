@@ -13,7 +13,7 @@ import {
 type ModbusDeviceProps = {
   deviceData: ModbusDeviceType;
   pollData?: ModbusDevicePollType;
-  onAction: (id: number, isDelete?: boolean) => void;
+  onAction: (device: ModbusDeviceType, isDelete?: boolean) => void;
 };
 
 export const ModbusDevice = (props: ModbusDeviceProps) => {
@@ -31,7 +31,7 @@ export const ModbusDevice = (props: ModbusDeviceProps) => {
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
   ) => {
     e.preventDefault();
-    onAction(deviceData.id, e.currentTarget.name === "delete");
+    onAction(deviceData, e.currentTarget.name === "delete");
   };
 
   return (

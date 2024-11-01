@@ -3,10 +3,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useFetch } from "@/shared/lib/use-fetch";
 import { useMutate } from "@/shared/lib/use-mutate";
 
-import {
-  ModbusDeviceFormType,
-  ModbusDeviceType,
-} from "../model/modbus-device.schema";
+import { ModbusDeviceFormType } from "../model/modbus-device.schema";
 
 import { isFormInvalid } from "../utils/is-form-invalid";
 import { formDeviceToModbusDevice } from "../utils/form-device-to-modbus-device";
@@ -30,15 +27,11 @@ export const useModbusForm = (props: UseModbusFormProps) => {
   });
 
   const mutate = useMutate({
-    fn: (device: ModbusDeviceType) =>
-      Boolean(deviceId)
-        ? putEditModbusDevice(device, deviceId!)
-        : postAddModbusDevice(device),
+    fn: Boolean(deviceId) ? putEditModbusDevice : postAddModbusDevice,
     onSuccess,
   });
 
   const inputs: { name: keyof ModbusDeviceFormType; placeholder: string }[] = [
-    { name: "id", placeholder: "ID устройства" },
     { name: "ipAddress", placeholder: "IP-адрес" },
     { name: "port", placeholder: "Порт (по умолч. 502)" },
     { name: "registerName", placeholder: "Имя устройства" },

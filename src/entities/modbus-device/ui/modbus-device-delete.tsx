@@ -1,18 +1,20 @@
 import { CSSProperties } from "react";
 
 import { useMutate } from "@/shared/lib/use-mutate";
+
+import { ModbusDeviceType } from "../model/modbus-device.schema";
 import { deleteModbusDeviceById } from "../services/delete-modbus-device-by-id";
 
 type ModbusDeviceDeleteProps = {
-  deviceId?: number;
+  device: ModbusDeviceType;
   onSuccess: () => void;
 };
 
 export const ModbusDeviceDelete = (props: ModbusDeviceDeleteProps) => {
-  const { deviceId, onSuccess } = props;
+  const { device, onSuccess } = props;
 
   const mutate = useMutate({
-    fn: () => deleteModbusDeviceById(deviceId!),
+    fn: () => deleteModbusDeviceById(device?.id!),
     onSuccess,
   });
 
@@ -29,7 +31,10 @@ export const ModbusDeviceDelete = (props: ModbusDeviceDeleteProps) => {
 
       {!mutate.isError && !mutate.isLoading && (
         <p style={textStyle()}>
-          Вы действительно хотите удалить устройство с ID {deviceId}?
+          Вы действительно хотите удалить устройство?
+          <br />
+          <br />
+          {device.ipAddress}:{device.port} - {device.registerName}
         </p>
       )}
 

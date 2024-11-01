@@ -20,58 +20,56 @@ export const MainPage = () => {
 
   return (
     <article className="main_page">
-      <main style={{ flex: "1" }}>
-        {values.isSignalError && (
+      {values.isSignalError && (
+        <p style={{ ...tooltopStyles, color: "#f44336" }}>
+          Ошибка чтения новых сообщений с сервера
+          <br />
+          Подключаемся заново...
+        </p>
+      )}
+
+      <section>
+        <header className="grid_row header_row">
+          <div />
+          <p className="header_cell">ID устройства</p>
+          <p className="header_cell">IP адрес</p>
+          <p className="header_cell">Порт</p>
+          <p className="header_cell">Имя устройства</p>
+          <p className="header_cell">Регистр</p>
+          <ModbusDeviceCreator
+            onClick={() => handlers.setSelectedDeviceId(0)}
+          />
+        </header>
+
+        {values.isLoading && (
+          <p style={{ ...tooltopStyles }}>Список устройств загружается...</p>
+        )}
+
+        {values.isError && (
           <p style={{ ...tooltopStyles, color: "#f44336" }}>
-            Ошибка чтения новых сообщений с сервера
-            <br />
-            Подключаемся заново...
+            Ошибка загрузки списка устройств
           </p>
         )}
 
-        <section style={{ overflow: "auto", display: "grid" }}>
-          <header className="grid_row header_row">
-            <div />
-            <p className="header_cell">ID устройства</p>
-            <p className="header_cell">IP адрес</p>
-            <p className="header_cell">Порт</p>
-            <p className="header_cell">Имя устройства</p>
-            <p className="header_cell">Регистр</p>
-            <ModbusDeviceCreator
-              onClick={() => handlers.setSelectedDeviceId(0)}
-            />
-          </header>
-
-          {values.isLoading && (
-            <p style={{ ...tooltopStyles }}>Список устройств загружается...</p>
-          )}
-
-          {values.isError && (
-            <p style={{ ...tooltopStyles, color: "#f44336" }}>
-              Ошибка загрузки списка устройств
+        {!values.isError &&
+          !values.isLoading &&
+          !Boolean(values.data?.length) && (
+            <p style={{ ...tooltopStyles }}>
+              Список устройств пустой. Добавьте первое устройство
             </p>
           )}
 
-          {!values.isError &&
-            !values.isLoading &&
-            !Boolean(values.data?.length) && (
-              <p style={{ ...tooltopStyles }}>
-                Список устройств пустой. Добавьте первое устройство
-              </p>
-            )}
-
-          <main>
-            {values.data?.map((device) => (
-              <ModbusDevice
-                key={device.id}
-                deviceData={device}
-                pollData={handlers.selectPollData(device)}
-                onAction={handlers.onAction}
-              />
-            ))}
-          </main>
-        </section>
-      </main>
+        <main>
+          {values.data?.map((device) => (
+            <ModbusDevice
+              key={device.id}
+              deviceData={device}
+              pollData={handlers.selectPollData(device)}
+              onAction={handlers.onAction}
+            />
+          ))}
+        </main>
+      </section>
 
       <ModalScreen
         open={typeof values.selectedDeviceId === "number"}
@@ -84,12 +82,12 @@ export const MainPage = () => {
       </ModalScreen>
 
       <ModalScreen
-        open={typeof values.deletingDeviceId === "number"}
-        onClose={() => handlers.setDeletingDeviceId(undefined)}
+        open={typeof values.deletingDevice !== "undefined"}
+        onClose={() => handlers.setDeletingDevice(undefined)}
       >
         <ModbusDeviceDelete
           onSuccess={handlers.onSuccessMutate}
-          deviceId={values.deletingDeviceId}
+          device={values.deletingDevice!}
         />
       </ModalScreen>
     </article>

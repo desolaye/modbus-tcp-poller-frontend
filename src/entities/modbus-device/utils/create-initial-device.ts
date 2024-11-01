@@ -7,7 +7,7 @@ export const createInitialDevice = (
   device?: ModbusDeviceType
 ): ModbusDeviceFormType => {
   return {
-    id: device?.id ? String(device.id) : "",
+    id: device?.id || 0,
     ipAddress: device?.ipAddress || "",
     port: device?.port ? String(device.port) : "",
     registerAddress: device?.registerAddress
