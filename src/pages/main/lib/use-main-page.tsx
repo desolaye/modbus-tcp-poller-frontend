@@ -17,10 +17,10 @@ export const useMainPage = () => {
   const [deletingDevice, setDeletingDevice] = useState<ModbusDeviceType>();
 
   const onMessageRecieve = (poll: ModbusDevicePollType) => {
-    setPollData((prev) => ({ ...prev, [String(poll.deviceId)]: poll }));
+    setPollData((prev) => ({ ...prev, [String(poll.ipAddress)]: poll }));
   };
 
-  const selectPollData = (device: ModbusDeviceType) => pollData[device.id];
+  const selectPoll = (device: ModbusDeviceType) => pollData[device.ipAddress];
 
   const { data, isError, isLoading, refetch } = useFetch({
     fn: getAllModbusDevices,
@@ -55,7 +55,7 @@ export const useMainPage = () => {
       onSuccessMutate,
       setSelectedDeviceId,
       setDeletingDevice,
-      selectPollData,
+      selectPoll,
       onAction,
     },
   };

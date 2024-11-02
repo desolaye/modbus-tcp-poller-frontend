@@ -18,11 +18,14 @@ export const useSignalR = (props: UseSignalRProps) => {
   if (isSignalError) {
     timeout.current = setTimeout(() => {
       setIsSignalError(false);
-    }, 3000);
+    }, 15000);
   }
 
   if (enabled && !isSignalError) {
-    if (timeout.current) clearTimeout(timeout.current);
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+      timeout.current = null;
+    }
 
     const ENV_URL = import.meta.env.VITE_PUBLIC_API_URL;
 

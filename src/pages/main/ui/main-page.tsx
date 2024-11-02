@@ -64,7 +64,7 @@ export const MainPage = () => {
             <ModbusDevice
               key={device.id}
               deviceData={device}
-              pollData={handlers.selectPollData(device)}
+              pollData={handlers.selectPoll(device)}
               onAction={handlers.onAction}
             />
           ))}
