@@ -5,7 +5,6 @@ import { useSignalR } from "@/shared/lib/use-signal-r";
 
 import {
   ModbusDevicePollMapType,
-  ModbusDevicePollType,
   ModbusDeviceType,
   getAllModbusDevices,
   sortModbusDevices,
@@ -15,10 +14,6 @@ export const useMainPage = () => {
   const [pollData, setPollData] = useState<ModbusDevicePollMapType>({});
   const [selectedDeviceId, setSelectedDeviceId] = useState<number>();
   const [deletingDevice, setDeletingDevice] = useState<ModbusDeviceType>();
-
-  const onMessageRecieve = (poll: ModbusDevicePollType) => {
-    setPollData((prev) => ({ ...prev, [String(poll.ipAddress)]: poll }));
-  };
 
   const selectPoll = (device: ModbusDeviceType) => pollData[device.ipAddress];
 
@@ -34,8 +29,10 @@ export const useMainPage = () => {
 
   const { isSignalError } = useSignalR({
     method: "ReceiveData",
-    enabled: !isError && !isLoading,
-    onMessageRecieve,
+    enabled: !isLoading && !isError,
+    onMessageRecieve: (poll) => {
+      setPollData((prev) => ({ ...prev, [String(poll.ipAddress)]: poll }));
+    },
   });
 
   const onAction = (device: ModbusDeviceType, isDelete?: boolean) => {
@@ -46,10 +43,10 @@ export const useMainPage = () => {
     values: {
       data: sortModbusDevices(pollData, data),
       isError,
-      isSignalError,
       isLoading,
       selectedDeviceId,
       deletingDevice,
+      isSignalError,
     },
     handlers: {
       onSuccessMutate,
