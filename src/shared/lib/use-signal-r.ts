@@ -15,6 +15,7 @@ export const useSignalR = (props: UseSignalRProps) => {
   const ENV_URL = import.meta.env.VITE_PUBLIC_API_URL;
 
   const [isSignalError, setIsSignalError] = useState(false);
+
   const connection = useRef<signalR.HubConnection | null>(null);
   const timeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -25,7 +26,7 @@ export const useSignalR = (props: UseSignalRProps) => {
     }
   };
 
-  useEffect(() => {
+  const handleSignalR = () => {
     if (isSignalError) {
       timeout.current = setTimeout(() => {
         setIsSignalError(false);
@@ -47,6 +48,10 @@ export const useSignalR = (props: UseSignalRProps) => {
       connection.current.onreconnecting(handleError);
       connection.current.start().catch(handleError);
     }
+  };
+
+  useEffect(() => {
+    if (enabled) handleSignalR();
   }, [isSignalError, enabled]);
 
   return { isSignalError };
