@@ -15,8 +15,8 @@ export const ModalScreen = (props: ModalScreenProps) => {
   if (!modalEl) throw new Error("No modal container in index.html");
 
   return createPortal(
-    <section className="modal" onClick={onClose}>
-      <div className="modal_content" onClick={(e) => e.stopPropagation()}>
+    <section className="modal" onMouseDown={onClose}>
+      <div className="modal_content" onMouseDown={(e) => e.stopPropagation()}>
         {children}
       </div>
     </section>,
