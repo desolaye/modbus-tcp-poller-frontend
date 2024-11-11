@@ -34,7 +34,7 @@ svg {
 .grid_row {
   display: grid;
   gap: 0 12px;
-  grid-template-columns: 30px 1fr 2fr 1fr 2fr 1fr 76px;
+  grid-template-columns: 30px 1fr 2fr 1fr 2fr 1fr 114px;
   align-items: center;
   justify-items: start;
 
@@ -78,6 +78,14 @@ svg {
 
 .pending_row:hover {
   background-color: rgb(253 230 138);
+}
+
+.confirm_error_row {
+  background-color: rgb(249 115 22);
+}
+
+.confirm_error_row:hover {
+  background-color: rgb(234 88 12);
 }
 
 /* UTILS STYLES */

@@ -4,6 +4,7 @@ export type ModbusDeviceType = {
   port: number;
   registerAddress: number;
   registerName: string;
+  isConfirmed: boolean;
 };
 
 export type ModbusDeviceFormType = {

@@ -5,12 +5,11 @@ import { ModbusDevicePollType } from "@/entities/modbus-device";
 
 type UseSignalRProps = {
   method: string;
-  enabled?: boolean;
   onMessageRecieve: (data: ModbusDevicePollType) => void;
 };
 
 export const useSignalR = (props: UseSignalRProps) => {
-  const { method, enabled = true, onMessageRecieve } = props;
+  const { method, onMessageRecieve } = props;
 
   const ENV_URL = import.meta.env.VITE_PUBLIC_API_URL;
 
@@ -18,6 +17,10 @@ export const useSignalR = (props: UseSignalRProps) => {
 
   const connection = useRef<signalR.HubConnection | null>(null);
   const timeout = useRef<NodeJS.Timeout | null>(null);
+
+  const handleReceiveMessage = (data: ModbusDevicePollType) => {
+    onMessageRecieve(data);
+  };
 
   const handleError = (err?: Error) => {
     if (err) {
@@ -33,7 +36,7 @@ export const useSignalR = (props: UseSignalRProps) => {
       }, 5000);
     }
 
-    if (enabled && !isSignalError) {
+    if (!isSignalError) {
       if (timeout.current) {
         clearTimeout(timeout.current);
         timeout.current = null;
@@ -43,7 +46,7 @@ export const useSignalR = (props: UseSignalRProps) => {
         .withUrl(`${ENV_URL}/modbusHub`)
         .build();
 
-      connection.current.on(method, onMessageRecieve);
+      connection.current.on(method, handleReceiveMessage);
       connection.current.onclose(handleError);
       connection.current.onreconnecting(handleError);
       connection.current.start().catch(handleError);
@@ -51,8 +54,8 @@ export const useSignalR = (props: UseSignalRProps) => {
   };
 
   useEffect(() => {
-    if (enabled) handleSignalR();
-  }, [isSignalError, enabled]);
+    handleSignalR();
+  }, []);
 
   return { isSignalError };
 };

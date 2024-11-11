@@ -1,0 +1,8 @@
+.button {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  padding: 8px;
+  display: block;
+  border: 2px solid rgb(239 68 68);
+}

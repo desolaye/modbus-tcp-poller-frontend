@@ -1,13 +1,16 @@
 import { CSSProperties } from "react";
 
+import { ModalScreen } from "@/shared/ui/modal-screen";
+import { ErrorNotification } from "@/shared/ui/error-notification";
+
 import {
   ModbusDevice,
   ModbusDeviceCreator,
   ModbusDeviceDelete,
+  ModbusDeviceForm,
 } from "@/entities/modbus-device";
+
 import { useMainPage } from "../lib/use-main-page";
-import { ModalScreen } from "@/shared/ui/modal-screen";
-import { ModbusDeviceForm } from "@/entities/modbus-device/ui/modbus-device-form";
 
 export const MainPage = () => {
   const { values, handlers } = useMainPage();
@@ -41,18 +44,18 @@ export const MainPage = () => {
           />
         </header>
 
-        {values.isLoading && (
+        {values.isFetchLoading && (
           <p style={{ ...tooltopStyles }}>Список устройств загружается...</p>
         )}
 
-        {values.isError && (
+        {values.isFetchError && (
           <p style={{ ...tooltopStyles, color: "#f44336" }}>
             Ошибка загрузки списка устройств
           </p>
         )}
 
-        {!values.isError &&
-          !values.isLoading &&
+        {!values.isFetchError &&
+          !values.isFetchLoading &&
           !Boolean(values.data?.length) && (
             <p style={{ ...tooltopStyles }}>
               Список устройств пустой. Добавьте первое устройство
@@ -90,6 +93,8 @@ export const MainPage = () => {
           device={values.deletingDevice!}
         />
       </ModalScreen>
+
+      <ErrorNotification isError={values.isDeviceError} />
     </article>
   );
 };

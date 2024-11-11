@@ -9,6 +9,7 @@ export const formDeviceToModbusDevice = (
   return {
     ...device,
     port: Number(device.port || "502"),
+    isConfirmed: false,
     registerAddress: Number(device.registerAddress || "60"),
   };
 };

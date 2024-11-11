@@ -9,16 +9,22 @@ export const sortModbusDevices = (
 ) => {
   const array = devices || [];
 
-  const warnings = array.filter(
-    (v) => Boolean(polls[v.ipAddress]) && Boolean(polls[v.ipAddress]?.isWarning)
-  );
+  const warnings = [];
+  const confirmWarnings = [];
+  const pendings = [];
+  const normals = [];
 
-  const pendings = array.filter((v) => !Boolean(polls[v.ipAddress]));
+  for (const elem of array) {
+    const poll = polls[elem.ipAddress];
 
-  const normals = array.filter(
-    (v) =>
-      Boolean(polls[v.ipAddress]) && !Boolean(polls[v.ipAddress]?.isWarning)
-  );
+    if (!Boolean(poll)) pendings.push(elem);
 
-  return [...warnings, ...pendings, ...normals];
+    if (Boolean(poll)) {
+      if (poll.isWarning && elem.isConfirmed) confirmWarnings.push(elem);
+      else if (poll.isWarning && !elem.isConfirmed) warnings.push(elem);
+      else normals.push(elem);
+    }
+  }
+
+  return [...warnings, ...confirmWarnings, ...pendings, ...normals];
 };
