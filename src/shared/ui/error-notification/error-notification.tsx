@@ -53,8 +53,7 @@ export const ErrorNotification = (props: ErrorNotificationProps) => {
         src="/error.wav"
         style={{ display: "none" }}
       />
-
-      <p>Нажмите для включения звуковых уведомлений об ошибках</p>
+      Нажмите для включения звуковых уведомлений об ошибках
     </button>
   );
 };

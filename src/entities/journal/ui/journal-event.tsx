@@ -24,7 +24,12 @@ export const JournalEvent = (props: JournalEventProps) => {
   };
 
   return (
-    <div className={classes}>
+    <a
+      className={classes}
+      href={"http://" + event.ipAdress}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       <p>{event.ipAdress}</p>
       <p>{eventStatusToText(event.status)}</p>
       <p>{isoToTime(event.createdAt, true)}</p>
@@ -38,6 +43,6 @@ export const JournalEvent = (props: JournalEventProps) => {
       >
         <DeleteIcon />
       </button>
-    </div>
+    </a>
   );
 };
