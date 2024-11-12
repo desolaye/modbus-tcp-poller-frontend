@@ -19,7 +19,8 @@ export const JournalEvent = (props: JournalEventProps) => {
 
   const classes = cn(cls.grid_row, cls.body_row);
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
     if (onDelete) onDelete();
   };
 
