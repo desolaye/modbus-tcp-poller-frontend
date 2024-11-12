@@ -6,7 +6,6 @@ import { useSignalR } from "@/shared/lib/use-signal-r";
 
 import {
   ModbusDevicePollMapType,
-  ModbusDevicePollType,
   ModbusDeviceType,
   getAllModbusDevices,
   sortModbusDevices,
@@ -15,7 +14,6 @@ import {
 
 export const useMainPage = () => {
   const [pollData, setPollData] = useState<ModbusDevicePollMapType>({});
-  const [lastPollData, setLastPollData] = useState<ModbusDevicePollType>();
   const [errorIPs, setErrorIPs] = useState<string[]>([]);
 
   const [deletingDevice, setDeletingDevice] = useState<ModbusDeviceType>();
@@ -46,41 +44,39 @@ export const useMainPage = () => {
     onSuccess: onSuccessMutate,
   });
 
-  const onMessageRecieve = (poll: ModbusDevicePollType) => {
-    setPollData((prev) => ({ ...prev, [String(poll.ipAddress)]: poll }));
-    setLastPollData(poll);
-  };
-
-  const { isSignalError } = useSignalR({
+  const { data: receiveData, isSignalError } = useSignalR({
     method: "ReceiveData",
-    onMessageRecieve: onMessageRecieve,
   });
 
-  const onAction = (device: ModbusDeviceType, actionType: string) => {
+  const onRowAction = (device: ModbusDeviceType, actionType: string) => {
     if (actionType === "delete") setDeletingDevice(device);
     else if (actionType === "edit") setSelectedDeviceId(device.id);
     else if (actionType === "confirmError") {
       setErrorIPs((prev) => prev.filter((v) => v !== device.ipAddress));
-      confirmError({ id: String(device.id), isConfirmed: "true" });
+      confirmError({ id: `${device.id}`, isConfirmed: "true" });
     }
   };
 
   const selectPoll = (device: ModbusDeviceType) => pollData[device.ipAddress];
 
   useEffect(() => {
-    const device = data?.find((v) => v.ipAddress === lastPollData?.ipAddress);
-    console.log(device);
+    const device = data?.find((v) => v.ipAddress === receiveData?.ipAddress);
 
-    if (device && lastPollData) {
-      if (!device.isConfirmed && lastPollData.isWarning) {
+    if (device && receiveData) {
+      setPollData((prev) => ({
+        ...prev,
+        [receiveData.ipAddress]: receiveData,
+      }));
+
+      if (!device.isConfirmed && receiveData.isWarning) {
         setErrorIPs((prev) => [...prev, device.ipAddress]);
       }
 
-      if (device.isConfirmed && !lastPollData.isWarning) {
-        confirmError({ id: String(device.id), isConfirmed: "false" });
+      if (device.isConfirmed && !receiveData.isWarning) {
+        confirmError({ id: `${device.id}`, isConfirmed: "false" });
       }
     }
-  }, [lastPollData]);
+  }, [receiveData]);
 
   return {
     values: {
@@ -99,7 +95,7 @@ export const useMainPage = () => {
       setSelectedDeviceId,
       setDeletingDevice,
       selectPoll,
-      onAction,
+      onRowAction,
     },
   };
 };

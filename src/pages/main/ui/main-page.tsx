@@ -1,65 +1,59 @@
-import { CSSProperties } from "react";
-
 import { ModalScreen } from "@/shared/ui/modal-screen";
 import { ErrorNotification } from "@/shared/ui/error-notification";
+import { Tooltip } from "@/shared/ui/tooltip";
 
 import {
   ModbusDevice,
   ModbusDeviceCreator,
   ModbusDeviceDelete,
-  ModbusDeviceForm,
 } from "@/entities/modbus-device";
+import { JournalButton } from "@/entities/journal";
 
 import { useMainPage } from "../lib/use-main-page";
 
 export const MainPage = () => {
   const { values, handlers } = useMainPage();
 
-  const tooltopStyles: CSSProperties = {
-    padding: "20px 0",
-    textAlign: "center",
-    fontWeight: 600,
-  };
-
   return (
     <article className="main_page">
       {values.isSignalError && (
-        <p style={{ ...tooltopStyles, color: "#f44336" }}>
+        <Tooltip isError>
           Ошибка чтения новых сообщений с сервера
           <br />
           Подключаемся заново...
-        </p>
+        </Tooltip>
       )}
 
       <section>
         <header className="grid_row header_row">
-          <div />
+          <ModbusDeviceCreator
+            onClick={handlers.setSelectedDeviceId}
+            onSuccess={handlers.onSuccessMutate}
+            open={typeof values.selectedDeviceId === "number"}
+            deviceId={values.selectedDeviceId}
+          />
           <p className="header_cell">ID устройства</p>
           <p className="header_cell">IP адрес</p>
           <p className="header_cell">Порт</p>
           <p className="header_cell">Имя устройства</p>
           <p className="header_cell">Регистр</p>
-          <ModbusDeviceCreator
-            onClick={() => handlers.setSelectedDeviceId(0)}
-          />
+          <JournalButton />
         </header>
 
         {values.isFetchLoading && (
-          <p style={{ ...tooltopStyles }}>Список устройств загружается...</p>
+          <Tooltip>Список устройств загружается...</Tooltip>
         )}
 
         {values.isFetchError && (
-          <p style={{ ...tooltopStyles, color: "#f44336" }}>
-            Ошибка загрузки списка устройств
-          </p>
+          <Tooltip isError>Ошибка загрузки списка устройств</Tooltip>
         )}
 
         {!values.isFetchError &&
           !values.isFetchLoading &&
           !Boolean(values.data?.length) && (
-            <p style={{ ...tooltopStyles }}>
+            <Tooltip>
               Список устройств пустой. Добавьте первое устройство
-            </p>
+            </Tooltip>
           )}
 
         <main>
@@ -68,21 +62,11 @@ export const MainPage = () => {
               key={device.id}
               deviceData={device}
               pollData={handlers.selectPoll(device)}
-              onAction={handlers.onAction}
+              onAction={handlers.onRowAction}
             />
           ))}
         </main>
       </section>
-
-      <ModalScreen
-        open={typeof values.selectedDeviceId === "number"}
-        onClose={() => handlers.setSelectedDeviceId(undefined)}
-      >
-        <ModbusDeviceForm
-          onSuccess={handlers.onSuccessMutate}
-          deviceId={values.selectedDeviceId}
-        />
-      </ModalScreen>
 
       <ModalScreen
         open={typeof values.deletingDevice !== "undefined"}

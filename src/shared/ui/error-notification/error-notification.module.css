@@ -2,7 +2,12 @@
   position: fixed;
   bottom: 12px;
   right: 12px;
-  padding: 8px;
+
+  cursor: pointer;
+
   display: block;
+  padding: 8px;
+  color: rgb(239 68 68);
   border: 2px solid rgb(239 68 68);
+  border-radius: 8px;
 }

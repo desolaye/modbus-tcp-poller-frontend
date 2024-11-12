@@ -19,19 +19,21 @@ export const ErrorNotification = (props: ErrorNotificationProps) => {
   const focused = useWindowFocus();
 
   useEffect(() => {
-    if (isError && !focused) {
-      document.title = "Ошибка УКУ!";
+    if (isClicked) {
+      if (isError && !focused) {
+        document.title = "Ошибка УКУ!";
 
-      audioRef.current?.play();
-
-      intervalRef.current = setInterval(() => {
         audioRef.current?.play();
-      }, 2500);
-    }
 
-    if (focused && intervalRef.current) {
-      document.title = "Modbus TCP Poller";
-      clearInterval(intervalRef.current);
+        intervalRef.current = setInterval(() => {
+          audioRef.current?.play();
+        }, 2500);
+      }
+
+      if (focused && intervalRef.current) {
+        document.title = "Modbus TCP Poller";
+        clearInterval(intervalRef.current);
+      }
     }
 
     return () => {

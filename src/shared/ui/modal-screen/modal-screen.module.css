@@ -1,0 +1,42 @@
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100dvh;
+
+  overflow: auto;
+
+  background-color: rgba(107, 114, 128, 0.5);
+  animation: 0.2s appear;
+}
+
+.modal_content {
+  max-width: fit-content;
+}
+
+.modal_center {
+  align-content: center;
+}
+
+.content_center {
+  margin-inline: auto;
+}
+
+.content_right {
+  min-width: 50vw;
+  height: 100%;
+  overflow: auto;
+  margin-inline: auto 0;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

@@ -1,5 +1,5 @@
-import { CSSProperties } from "react";
-import { useModbusForm } from "../lib/use-modbus-form";
+import { Tooltip } from "@/shared/ui/tooltip";
+import { useModbusForm } from "../../lib/use-modbus-form";
 
 type ModbusDeviceFormProps = {
   onSuccess: () => void;
@@ -9,19 +9,13 @@ type ModbusDeviceFormProps = {
 export const ModbusDeviceForm = (props: ModbusDeviceFormProps) => {
   const { handlers, values } = useModbusForm(props);
 
-  const textStyle = (color?: string): CSSProperties => ({
-    fontWeight: 600,
-    textAlign: "center",
-    color,
-  });
-
   if (values.modbus.isLoading) {
-    return <p style={textStyle()}>Загружаем данные об устройстве...</p>;
+    return <Tooltip noPadding>Загружаем данные об устройстве...</Tooltip>;
   }
 
   return (
     <form className="form" onReset={handlers.reset} onSubmit={handlers.submit}>
-      <p style={textStyle()}>Конфигурация устройства</p>
+      <Tooltip noPadding>Конфигурация устройства</Tooltip>
 
       {values.inputs.map((v) => (
         <input
@@ -36,37 +30,36 @@ export const ModbusDeviceForm = (props: ModbusDeviceFormProps) => {
       ))}
 
       {values.isFormError && (
-        <p style={textStyle("#f44336")}>
+        <Tooltip isError noPadding>
           Ошибка заполнения формы. Убедитесь, что данные введены правильно
-        </p>
+        </Tooltip>
       )}
 
       {values.mutate.isError && (
-        <p style={textStyle("#f44336")}>
+        <Tooltip isError noPadding>
           Ошибка отправки формы
           <br />
           Убедитесь, что данные введены правильно или обратитесь к специалисту
-        </p>
+        </Tooltip>
+      )}
+
+      {values.mutate.isLoading && (
+        <Tooltip noPadding>
+          {Boolean(values.deviceId) ? "Редактируем" : "Создаём"} устройство...
+        </Tooltip>
       )}
 
       <section style={{ display: "flex", gap: 8 }}>
-        <button className="button_primary" style={{ width: "100%" }}>
+        <button
+          className="button_primary full"
+          disabled={values.mutate.isLoading}
+        >
           {Boolean(values.deviceId) ? "Редактировать" : "Добавить"}
         </button>
-        <button
-          className="button_neutral"
-          type="reset"
-          style={{ width: "100%" }}
-        >
+        <button className="button_neutral full" type="reset">
           Отменить
         </button>
       </section>
-
-      {values.mutate.isLoading && (
-        <p style={textStyle()}>
-          {Boolean(values.deviceId) ? "Редактируем" : "Создаём"} устройство...
-        </p>
-      )}
     </form>
   );
 };

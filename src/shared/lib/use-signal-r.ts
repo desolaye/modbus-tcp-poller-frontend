@@ -5,21 +5,21 @@ import { ModbusDevicePollType } from "@/entities/modbus-device";
 
 type UseSignalRProps = {
   method: string;
-  onMessageRecieve: (data: ModbusDevicePollType) => void;
 };
 
 export const useSignalR = (props: UseSignalRProps) => {
-  const { method, onMessageRecieve } = props;
+  const { method } = props;
 
   const ENV_URL = import.meta.env.VITE_PUBLIC_API_URL;
 
   const [isSignalError, setIsSignalError] = useState(false);
+  const [data, setData] = useState<ModbusDevicePollType>();
 
   const connection = useRef<signalR.HubConnection | null>(null);
   const timeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleReceiveMessage = (data: ModbusDevicePollType) => {
-    onMessageRecieve(data);
+    setData(data);
   };
 
   const handleError = (err?: Error) => {
@@ -57,5 +57,5 @@ export const useSignalR = (props: UseSignalRProps) => {
     handleSignalR();
   }, []);
 
-  return { isSignalError };
+  return { data, isSignalError };
 };
