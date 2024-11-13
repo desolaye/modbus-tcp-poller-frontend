@@ -68,6 +68,10 @@ export const useMainPage = () => {
         [receiveData.ipAddress]: receiveData,
       }));
 
+      if (device.isConfirmed && !receiveData.isWarning) {
+        setErrorIPs((prev) => prev.filter((v) => v !== device.ipAddress));
+      }
+
       if (!device.isConfirmed && receiveData.isWarning) {
         setErrorIPs((prev) => [...prev, device.ipAddress]);
       }
