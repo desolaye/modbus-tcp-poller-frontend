@@ -2,7 +2,7 @@ import { Tooltip } from "@/shared/ui/tooltip";
 import { useModbusForm } from "../../lib/use-modbus-form";
 
 type ModbusDeviceFormProps = {
-  onSuccess: () => void;
+  onSuccess: (ipAddress?: string) => void;
   deviceId?: number;
 };
 

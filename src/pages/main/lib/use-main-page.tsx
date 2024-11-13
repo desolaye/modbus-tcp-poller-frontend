@@ -19,10 +19,12 @@ export const useMainPage = () => {
   const [deletingDevice, setDeletingDevice] = useState<ModbusDeviceType>();
   const [selectedDeviceId, setSelectedDeviceId] = useState<number>();
 
-  const onSuccessMutate = () => {
+  const onSuccessMutate = (ipAddress?: string) => {
     refetch();
     setSelectedDeviceId(undefined);
     setDeletingDevice(undefined);
+
+    if (ipAddress) setErrorIPs((prev) => prev.filter((v) => v !== ipAddress));
   };
 
   const {

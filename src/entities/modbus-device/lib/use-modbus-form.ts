@@ -14,7 +14,7 @@ import { postAddModbusDevice } from "../services/post-add-modbus-device";
 import { putEditModbusDevice } from "../services/put-edit-modbus-device";
 
 type UseModbusFormProps = {
-  onSuccess: () => void;
+  onSuccess: (ipAddress?: string) => void;
   deviceId?: number;
 };
 
@@ -28,7 +28,7 @@ export const useModbusForm = (props: UseModbusFormProps) => {
 
   const mutate = useMutate({
     fn: Boolean(deviceId) ? putEditModbusDevice : postAddModbusDevice,
-    onSuccess,
+    onSuccess: () => onSuccess(modbus.data?.ipAddress),
   });
 
   const inputs: { name: keyof ModbusDeviceFormType; placeholder: string }[] = [
@@ -41,7 +41,7 @@ export const useModbusForm = (props: UseModbusFormProps) => {
   const [isFormError, setIsFormError] = useState(false);
   const [device, setDevice] = useState(createInitialDevice());
 
-  const reset = onSuccess;
+  const reset = () => onSuccess();
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

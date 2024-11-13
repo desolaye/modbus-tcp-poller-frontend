@@ -6,7 +6,7 @@ import { deleteModbusDeviceById } from "../services/delete-modbus-device-by-id";
 
 type ModbusDeviceDeleteProps = {
   device: ModbusDeviceType;
-  onSuccess: () => void;
+  onSuccess: (ipAddress?: string) => void;
 };
 
 export const ModbusDeviceDelete = (props: ModbusDeviceDeleteProps) => {
@@ -14,7 +14,7 @@ export const ModbusDeviceDelete = (props: ModbusDeviceDeleteProps) => {
 
   const { isError, isLoading, mutateAsync } = useMutate({
     fn: () => deleteModbusDeviceById(device?.id!),
-    onSuccess,
+    onSuccess: () => onSuccess(device.ipAddress),
   });
 
   return (
@@ -42,7 +42,7 @@ export const ModbusDeviceDelete = (props: ModbusDeviceDeleteProps) => {
           Подтвердить
         </button>
 
-        <button className="button_neutral full" onClick={onSuccess}>
+        <button className="button_neutral full" onClick={() => onSuccess()}>
           Отменить
         </button>
       </section>
